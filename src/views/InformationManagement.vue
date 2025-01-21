@@ -21,10 +21,10 @@
                 "><strong>&nbsp;&nbsp;&nbsp;&nbsp;信息管理</strong></span>
                     </div>
                 </el-col>
-                <el-col :span="18">
+                <el-col :span="18"  style="width: 78%">
                     <div class="grid-content bg-purple-light" style="text-align: right; margin-top: -8px">
-                        <el-select v-model="value" filterable placeholder="请选择班级">
-                            <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
+                        <el-select v-model="class_id" filterable placeholder="请选择班级" @change="changeClass" style="width: 200px">
+                            <el-option v-for="item in optionsClass" :key="item.class_id" :label="item.name" :value="item.class_id">
                             </el-option>
                         </el-select>
 
@@ -44,30 +44,22 @@ export default {
     data() {
         //这里存放数据
         return {
-            value: "",
-            options1: [{
-                    value: "一班",
-                    label: "一班",
-                },
-                {
-                    value: "二班",
-                    label: "二班",
-                },
-                {
-                    value: "三班",
-                    label: "三班",
-                },
-                {
-                    value: "四班",
-                    label: "四班",
-                },
-                {
-                    value: "五班",
-                    label: "五班",
-                },
-            ],
+            class_id: "",
+            optionsClass: [],
         };
     },
+    created(){
+        this.request.get("/classes").then(res => {
+            if (res.data) {
+                this.optionsClass = res.data;
+            }
+        })
+    },
+    methods: {
+        changeClass() {
+            console.log(this.class_id);
+        },
+    }
 }
 </script>
 

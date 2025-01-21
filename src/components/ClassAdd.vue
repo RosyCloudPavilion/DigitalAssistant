@@ -17,22 +17,32 @@
             <el-col :span="13" :offset="3">
                 <el-form :model="addForm" :rules="rules" ref="addForm" id="addForm" name="addForm" label-width="90px"  labelPosition="left" :status-icon="true">
                     <!-- 输入班级名称 -->
-                    <el-form-item label="班级名称：" prop="className">
-                        <el-input v-model="addForm.className" id="className" style="width: 420px" placeholder="请输入班级名称"></el-input>
+                    <el-form-item label="班级名称：" prop="name">
+                        <el-input v-model="addForm.name" id="name" style="width: 420px" placeholder="请输入班级名称"></el-input>
                         <span class="inputtip"><span class="tipst">*</span>
                             设置班级名称</span>
                     </el-form-item>
 
-                    <!-- 输入班级描述 -->
-                    <el-form-item label="班级描述：" prop="classDescription">
-                        <el-input v-model="addForm.classDescription" type="textarea" id="classDescription" placeholder="请输入班级描述"></el-input>
+                    <el-form-item label="班号：" prop="class_id">
+                        <el-input v-model="addForm.class_id" id="class_id" style="width: 420px" placeholder="请输入班号"></el-input>
                         <span class="inputtip"><span class="tipst">*</span>
-                            设置班级描述</span>
+                            设置班号</span>
+                    </el-form-item>
+                    <el-form-item label="年级：" prop="grade">
+                        <el-input v-model="addForm.grade" id="grade" style="width: 420px" placeholder="请输入年级"></el-input>
+                        <span class="inputtip"><span class="tipst">*</span>
+                            设置年级</span>
+                    </el-form-item>
+
+                    <el-form-item label="教师ID：" prop="teacher_id">
+                        <el-input v-model="addForm.teacher_id" id="teacher_id" style="width: 420px" placeholder="请输入教师ID"></el-input>
+                        <span class="inputtip"><span class="tipst">*</span>
+                            设置教师ID</span>
                     </el-form-item>
 
                     <br /><br />
                     <div style="text-align: center; width: 300px">
-                        <el-button @click="submitForm('addForm')">添加</el-button>
+                        <el-button @click="submitForm()">添加</el-button>
                     </div>
                 </el-form>
             </el-col>
@@ -47,8 +57,10 @@ export default {
     data() {
         return {
             addForm: {
-                className: '',
-                classDescription: ''
+                class_id: '',
+                name: '',
+                grade: '',
+                teacher_id: '',
             },
             rules: {
                 className: [
@@ -62,19 +74,26 @@ export default {
     },
     methods: {
         goClassInfo() {
+            console.log("goClassInfo");
             this.$router.push("/informationManagement/classInfo");
         },
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    console.log('Class Name:', this.addForm.className);
-                    console.log('Class Description:', this.addForm.classDescription);
-                    this.addForm = { className: '', classDescription: '' };
-                } else {
-                    alert("表单信息填写有误");
-                    return false;
+        submitForm() {
+            this.request.post("/addClass", JSON.stringify(this.addForm)).then(res => {
+                console.log(res.success)
+                if (res.success) {
+                    this.$message({
+                        message: "添加班级成功！",
+                        type: "warning",
+                    });
+                    this.notset = true
+                }else{
+                    this.$message({
+                        message: "修改失败",
+                        type: "error",
+                    });
                 }
-            });
+
+            })
         }
     }
 };

@@ -40,16 +40,15 @@
                         <div class="grid-content bg-purple-light" style="text-align: right">
                             <el-form :model="form" :inline="true" class="demo-form-inline el-row1">
                                 <el-form-item>
-                                    <el-date-picker v-model="value1" type="datetime" placeholder="开始时间"
+                                    <el-date-picker v-model="value1" type="date" placeholder="开始时间"
                                         style="width: 200px" @change="log">
                                     </el-date-picker>
                                 </el-form-item>
                                 <el-form-item label="选择班级：">
-                                    <el-select v-model="form.class" placeholder="请选择班级" @change="changeClass"
+                                    <el-select v-model="class_id" placeholder="请选择班级" @change="changeClass"
                                         class="el-select1">
-                                        <el-option v-for="item in optionsClass" :key="item.value" :label="item.label"
-                                            :value="item.value">
-                                        </el-option>
+                                        <el-option v-for="item in optionsClass" :key="item.class_id" :label="item.name"
+                                            :value="item.class_id"></el-option>
                                     </el-select>
                                 </el-form-item>
 
@@ -334,13 +333,9 @@ export default {
     components: {},
     data() {
         return {
-            optionsClass: [
-                { value: 154, label: "电子商务" },
-                { value: 155, label: "信息工程" },
-                { value: 156, label: "软件工程" },
-                { value: 157, label: "网络空间安全" },
-            ],
-            value1: "",
+            optionsClass: [],
+            value1: "2025-01-06",
+            class_id: "CL001",
             options: [],
             tableData1: [{
                 q1: "10",
@@ -592,9 +587,14 @@ export default {
             titleColor: "#ccccccc",
         };
     },
-
-    //初始化
-
+    created() {
+        this.request.get("/classes").then(res => {
+            if (res.data) {
+                this.optionsClass = res.data;
+            }
+            console.log(this.optionsClass);
+        })
+    },
     methods: {
         log(m, n, x) {
             console.log(m);
@@ -631,7 +631,10 @@ export default {
         },
         search() {
 
-        }
+        },
+        changeClass() {
+            console.log(this.class_id);
+        },
 
     },
 };

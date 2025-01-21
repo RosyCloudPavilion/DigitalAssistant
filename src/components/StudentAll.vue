@@ -35,17 +35,22 @@
             </el-table-column>
             <!-- <el-table-column label="ID" prop="id" align="center" width="50" border>
         </el-table-column> -->
-            <el-table-column label="学号" prop="value" align="center" width="110" border>
+            <el-table-column label="学号" prop="student_id" align="center" width="110" border>
             </el-table-column>
-            <el-table-column label="姓名" prop="realName" align="center" width="70" border>
+            <el-table-column label="姓名" prop="name" align="center" width="70" border>
             </el-table-column>
-            <el-table-column label="性别" prop="state" align="center" width="50">
+            <el-table-column label="性别" prop="gender" align="center" width="50">
             </el-table-column>
             <el-table-column label="邮箱" prop="email" align="center" width="200">
             </el-table-column>
             <el-table-column label="手机号码" prop="phone" align="center" width="120">
             </el-table-column>
-            <el-table-column label="备注" prop="description" align="center">
+            <el-table-column label="班级" prop="class_id" align="center">
+                <template slot-scope="scope">
+                    <span>
+                        {{ getClassOptionName(scope.row.class_id) }}
+                    </span>
+                </template>
             </el-table-column>
             <el-table-column align="right" width="140">
                 <template slot="header" slot-scope="scope">
@@ -223,107 +228,8 @@ export default {
         return {
             gridData: {},
             dialogFormVisible: false,
-            tableData: [
-                {
-                    id: 1,
-                    userid: 2,
-                    realName: "苏永甫",
-                    state: "男",
-                    email: "suyongfu@m.fudan.edu.cn",
-                    phone: "12345678910",
-                    description: "硕士研究生",
-                    value: "22210240271",
-                    label: "苏永甫"
-                },
-                {
-                    id: 2,
-                    userid: 3,
-                    realName: "谢万超",
-                    state: "男",
-                    email: "xiewanchao@m.fudan.edu.cn",
-                    phone: "12445678910",
-                    description: "硕士研究生",
-                    value: "22210240325",
-                    label: "谢万超"
-                },
-                {
-                    id: 4,
-                    userid: 5,
-                    realName: "吴斌",
-                    state: "男",
-                    email: "wubin@m.fudan.edu.cn",
-                    phone: "13612345678",
-                    description: "博士研究生",
-                    value: "18110240013",
-                    label: "吴斌"
-                },
-                {
-                    id: 5,
-                    userid: 6,
-                    realName: "赵一飞",
-                    state: "男",
-                    email: "zhaoyifei@m.fudan.edu.cn",
-                    phone: "13712345678",
-                    description: "博士研究生",
-                    value: "19110240026",
-                    label: "赵一飞"
-                },
-                {
-                    id: 6,
-                    userid: 7,
-                    realName: "王帅宇",
-                    state: "男",
-                    email: "wangshuaiyu@m.fudan.edu.cn",
-                    phone: "13812345678",
-                    description: "硕士研究生",
-                    value: "20212010031",
-                    label: "王帅宇"
-                },
-                {
-                    id: 7,
-                    userid: 8,
-                    realName: "姚鑫玉",
-                    state: "男",
-                    email: "yaoxinyu@m.fudan.edu.cn",
-                    phone: "13912345678",
-                    description: "硕士研究生",
-                    value: "20210240125",
-                    label: "姚鑫玉"
-                },
-                {
-                    id: 8,
-                    userid: 9,
-                    realName: "包智超",
-                    state: "男",
-                    email: "baozhichao@m.fudan.edu.cn",
-                    phone: "14012345678",
-                    description: "硕士研究生",
-                    value: "21210240113",
-                    label: "包智超"
-                },
-                {
-                    id: 9,
-                    userid: 10,
-                    realName: "王朔",
-                    state: "男",
-                    email: "wangshuo@m.fudan.edu.cn",
-                    phone: "14112345678",
-                    description: "硕士研究生",
-                    value: "21210240340",
-                    label: "王朔"
-                },
-                {
-                    id: 10,
-                    userid: 11,
-                    realName: "徐铮",
-                    state: "男",
-                    email: "xuzheng@m.fudan.edu.cn",
-                    phone: "14212345678",
-                    description: "硕士研究生",
-                    value: "22210240335",
-                    label: "徐铮"
-                }
-            ],
+            classOptions: [],
+            tableData: [],
             setfData: {},
             search: "",
             uploadForm: new FormData(),
@@ -450,6 +356,20 @@ export default {
             },
         };
     },
+    created() {
+        this.request.get("/classes").then((res) => {
+            if (res.data) {
+                this.optionsClass = res.data;
+            }
+        });
+        this.request.get("/student").then((res) => {
+            if (res.data) {
+                this.tableData = res.data;
+                console.log(this.tableData);
+            }
+        });
+
+    },
     mounted: function () {
         var _this = this;
         this.tp();
@@ -461,6 +381,11 @@ export default {
     //   });
     // },
     methods: {
+        getClassOptionName(class_id) {
+            console.log(class_id);
+            const classObj = this.optionsClass.find(option => option.class_id === class_id);
+            return classObj ? classObj.name : 'Unknown Class';
+        },
         tp() {
 
 

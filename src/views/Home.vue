@@ -21,12 +21,12 @@
                         </div>
                     </span>
                     <el-dropdown-menu slot="dropdown" placement="top - start">
-                        <el-dropdown-item command="message" icon="el-icon-plus">消息</el-dropdown-item>
+                        <!-- <el-dropdown-item command="message" icon="el-icon-plus">消息</el-dropdown-item>
                         <el-dropdown-item command="toDoList" icon="el-icon-circle-plus">待办</el-dropdown-item>
                         <router-link to="/informationManagement/createClass" style="text-decoration: none">
                             <el-dropdown-item command="createClass"
                                 icon="el-icon-circle-plus-outline">开课</el-dropdown-item>
-                        </router-link>
+                        </router-link> -->
                         <el-dropdown-item command="setting" icon="el-icon-circle-plus-outline">设置</el-dropdown-item>
 
                         <el-dropdown-item command="quit" icon="el-icon-circle-check">退出登录</el-dropdown-item>
@@ -183,7 +183,7 @@
                             </el-submenu>
                         </el-menu>
 
-<!-- 
+                        <!-- 
                         <router-link to="/experimentalPerformance" style="text-decoration: none">
                             <div class="lists list1">
                                 <i class="el-icon-s-grid"></i>
@@ -222,15 +222,9 @@
                             </div>
                         </router-link> -->
 
-                        <router-link to="/teachingQuality" style="text-decoration: none">
-                            <div class="lists">
-                                <i class="el-icon-tickets"></i>
-                                课程教学质量
-                            </div>
-                        </router-link>
 
                         <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen"
-                            @close="handleClose">
+                            @close="handleClose" :default-openeds="['1']">
                             <el-submenu index="1">
                                 <template slot="title">
                                     <i class="el-icon-s-unfold"></i>
@@ -248,7 +242,13 @@
                                 </el-menu-item-group>
                             </el-submenu>
                         </el-menu>
-
+                        
+                        <router-link to="/updateInfo" style="text-decoration: none">
+                            <div class="lists">
+                                <i class="el-icon-s-unfold"></i>
+                                个人信息管理
+                            </div>
+                        </router-link>
                     </template>
 
                     <!-- 学生账户 -->
@@ -311,8 +311,16 @@
                             </div>
                         </router-link>
 
+
+                        <router-link to="/teachingQuality" style="text-decoration: none">
+                            <div class="lists">
+                                <i class="el-icon-tickets"></i>
+                                课程教学质量
+                            </div>
+                        </router-link>
+
                         <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen"
-                            @close="handleClose">
+                            @close="handleClose" :default-openeds="['1']">
                             <el-submenu index="1">
                                 <template slot="title">
                                     <i class="el-icon-s-unfold"></i>
@@ -326,6 +334,18 @@
                                     <router-link to="/informationManagement/studentInfo" style="text-decoration: none">
                                         <el-menu-item index="1-2" class="lists"
                                             style="text-decoration: none; padding-left: 60px">学生信息管理</el-menu-item>
+                                    </router-link>
+                                    <router-link to="/informationManagement/teacherInfo" style="text-decoration: none">
+                                        <el-menu-item index="1-3" class="lists"
+                                            style="text-decoration: none; padding-left: 60px">教师信息管理</el-menu-item>
+                                    </router-link>
+                                    <router-link to="/informationManagement/parentInfo" style="text-decoration: none">
+                                        <el-menu-item index="1-4" class="lists"
+                                            style="text-decoration: none; padding-left: 60px">家长信息管理</el-menu-item>
+                                    </router-link>
+                                    <router-link to="/informationManagement/cameraInfo" style="text-decoration: none">
+                                        <el-menu-item index="1-5" class="lists"
+                                            style="text-decoration: none; padding-left: 60px">摄像头信息管理</el-menu-item>
                                     </router-link>
                                 </el-menu-item-group>
                             </el-submenu>
@@ -846,7 +866,8 @@ body {
     /* margin-top: 5px; */
 }
 
-.el-icon-s-unfold {
+.el-icon-s-unfold,
+.el-icon-s-grid {
     color: #333;
     top: 0;
 }

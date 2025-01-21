@@ -14,29 +14,36 @@
                 </el-row>
             </el-button-group>
         </el-card><br />
-        <el-form :model="user" ref="addForm" id="addForm" name="addForm" label-width="80px"
-            labelPosition="left" style="width: 80%; margin-left: 20px">
+        <el-form :model="user" ref="addForm" id="addForm" name="addForm" label-width="80px" labelPosition="left"
+            style="width: 80%; margin-left: 20px">
             <el-form-item label="姓名：" prop="name">
                 <el-input v-model="user.name" id="name" placeholder="请输入姓名"></el-input>
                 <span class="inputtip"><span class="tipst">*</span> 请输入真实姓名</span>
             </el-form-item>
+            <el-form-item label="部门：" prop="department" v-if="user.role == 'teacher' || user.role == 'admin'">
+                <el-input v-model="user.department" id="department" placeholder="请输部门"></el-input>
+                <span class="inputtip"><span class="tipst">*</span> 请输部门</span>
+            </el-form-item>
+            <el-form-item label="职位：" prop="position" v-if="user.role == 'teacher' || user.role == 'admin'">
+                <el-input v-model="user.position" id="position" placeholder="请输职位"></el-input>
+                <span class="inputtip"><span class="tipst">*</span> 请输职位</span>
+            </el-form-item>
             <el-form-item label="密码：" prop="password">
-                <el-input v-model="user.password" type="password" id="password"
-                    placeholder="请输入密码"></el-input>
+                <el-input v-model="user.password" type="password" id="password" placeholder="请输入密码"></el-input>
                 <span class="inputtip"><span class="tipst">*</span> 设置6位以上的密码(可以包含数字、字母、下划线)</span>
             </el-form-item>
-            <el-form-item label="性别 ：">
-                <el-radio-group v-model="user.state">
+            <el-form-item label="性别 ：" v-if="user.role == 'student' || user.role == 'teacher'">
+                <el-radio-group v-model="user.gender">
                     <el-radio label="男"></el-radio>
                     <el-radio label="女"></el-radio>
                 </el-radio-group>
                 <span class="inputtip"></span>
             </el-form-item>
-            <el-form-item label="学号 ：" prop="user_id" v-if="user.role == 'student'">
+            <!-- <el-form-item label="学号 ：" prop="user_id" v-if="user.role == 'student'">
                 <el-input v-model="student.student_id" id="student_id"
                     placeholder="请输入学号"></el-input>
                 <span class="inputtip"><span class="tipst">*</span> 输入学号</span>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="邮箱 ：" prop="email">
                 <el-input v-model="user.email" id="email" placeholder="请输入邮箱"></el-input>
                 <span class="inputtip"></span>
@@ -44,6 +51,16 @@
             <el-form-item label="手机号 ：" prop="phone">
                 <el-input v-model="user.phone" id="phone" placeholder="请输入手机号"></el-input>
                 <span class="inputtip"></span>
+            </el-form-item>
+            <el-form-item label="学生学号 ：" prop="student_id" v-if="user.role == 'parent'">
+                <el-input v-model="user.student_id" id="student_id" placeholder="请输入学号"></el-input>
+                <span class="inputtip"></span>
+            </el-form-item>
+            <el-form-item label="关系：" style="width: 150px" v-if="user.role == 'parent'">
+                <el-select v-model="user.relationship" placeholder="请选择与学生关系" class="el-select1">
+                    <el-option v-for="item in optionsRelationship" :key="item.value" :label="item.label"
+                        :value="item.value"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="选择班级：" style="width: 150px" v-if="user.role == 'student'">
                 <el-select v-model="form.class_id" placeholder="请选择班级" class="el-select1">
@@ -57,7 +74,7 @@
                     <input type="file" accept="image/*" name="" id="file1" />
                 </a>
                 <a href="javascript:;" class="a-upload2">
-                    <input type="file" accept="image/*" name="" id="file2"  />
+                    <input type="file" accept="image/*" name="" id="file2" />
                 </a>
                 <a href="javascript:;" class="a-upload3">
                     <input type="file" accept="image/*" name="" id="file3" />
@@ -85,16 +102,23 @@ export default {
                 class_id: '',
                 name: ''
             },
+            optionsRelationship: [
+                { value: '父亲', label: '父亲' },
+                { value: '母亲', label: '母亲' },
+                { value: '兄弟姐妹', label: '兄弟姐妹' },
+                { value: '朋友', label: '朋友' },
+                { value: '其他', label: '其他' }
+            ]
         };
     },
     created() {
-        if(this.student){
-            this.request.get("/classes?class_id="+ this.student.class_id).then(res => {
-            if (res.data) {
-                this.form.name = res.data.name
-                this.form.class_id = res.data.class_id
-            }
-        })
+        if (this.student.class_id) {
+            this.request.get("/classes?class_id=" + this.student.class_id).then(res => {
+                if (res.data) {
+                    this.form.name = res.data.name
+                    this.form.class_id = res.data.class_id
+                }
+            })
         }
         this.request.get("/classes").then(res => {
             if (res.data) {
@@ -104,7 +128,16 @@ export default {
     },
     methods: {
         submitSign1() {
-
+            this.request.post('/updateInfo', this.user).then(response => {
+                if (response.success) {
+                    localStorage.setItem("userinfo", JSON.stringify(this.user))
+                    this.$message.warning('信息更新成功');
+                } else {
+                    this.$message.error('信息更新失败');
+                }
+            }).catch(error => {
+                this.$message.error('信息更新失败');
+            });
         },
         jl1() {
             // Handle class change

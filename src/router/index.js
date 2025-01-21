@@ -138,11 +138,41 @@ const routes = [
                         ],
                     },
                     {
-                        path: '/informationManagement/createClass',
-                        name: 'CreateClass',
+                        path: '/informationManagement/teacherInfo',
+                        name: 'TeacherInfo',
                         component: () =>
-                            import('../components/CreateClass.vue')
+                            import('../components/TeacherInfo.vue'),
                     },
+                    {
+                        path: '/informationManagement/teacherInfo/teacherAdd',
+                        name: 'TeacherAdd',
+                        component: () =>
+                            import('../components/TeacherAdd.vue'),
+                    },
+                    {
+                        path: '/informationManagement/cameraInfo',
+                        name: 'CameraInfo',
+                        component: () =>
+                            import('../components/CameraInfo.vue'),
+                    },
+                    {
+                        path: '/informationManagement/cameraInfo/cameraAdd',
+                        name: 'CameraAdd',
+                        component: () =>
+                            import('../components/CameraAdd.vue'),
+                    },
+                    {
+                        path: '/informationManagement/parentInfo',
+                        name: 'ParentInfo',
+                        component: () =>
+                            import('../components/ParentInfo.vue'),
+                    },
+                    {
+                        path: '/informationManagement/parentInfo/parentAdd',
+                        name: 'ParentAdd',
+                        component: () =>
+                            import('../components/ParentAdd.vue'),
+                    }
                 ]
             }
         ]

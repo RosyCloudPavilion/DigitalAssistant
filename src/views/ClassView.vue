@@ -20,11 +20,10 @@
                             <el-form :model="form" :inline="true" class="demo-form-inline el-row1">
                                 <el-row>
                                     <el-form-item label="选择班级：">
-                                        <el-select v-model="form.class" placeholder="请选择班级" @change="changeClass"
+                                        <el-select v-model="class_id" placeholder="请选择班级" @change="changeClass"
                                             class="el-select1">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label"
-                                                :value="item.value">
-                                            </el-option>
+                                            <el-option v-for="item in optionsClass" :key="item.class_id" :label="item.name"
+                                            :value="item.class_id"></el-option>
                                         </el-select>
                                     </el-form-item>
 
@@ -219,6 +218,8 @@ export default {
     computed: {},
     data() {
         return {
+            class_id:"",
+            optionsClass:[],
             loadingDots: [], // 存储每行的点点点状态
             loadingDotsInterval: null,
             options: [
@@ -341,7 +342,13 @@ export default {
             });
         }, 10000); // 每隔10秒更新一次数据
     },
-
+    created() {
+        this.request.get("/classes").then(res => {
+            if (res.data) {
+                this.optionsClass = res.data;
+            }
+        })
+    },
     methods: {
         startLoadingDots() {
             // 启动动态加载的点点点效果

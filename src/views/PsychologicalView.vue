@@ -18,16 +18,15 @@
                                 <el-form-item label="选择班级：">
                                     <el-select v-model="form.class" placeholder="请选择班级" @change="changeClass"
                                         class="el-select1">
-                                        <el-option v-for="item in optionsClass" :key="item.value" :label="item.label"
-                                            :value="item.value">
-                                        </el-option>
+                                        <el-option v-for="item in optionsClass" :key="item.class_id" :label="item.name"
+                                            :value="item.class_id"></el-option>
                                     </el-select>
                                 </el-form-item>
                                 <el-form-item label="选择学生：">
-                                    <el-select clearable v-model="form.student" placeholder="学生" @change="changeGroup"
+                                    <el-select clearable v-model="form.student" placeholder="学生" @change="changeStudent"
                                         class="el-select3">
-                                        <el-option v-for="item in optionsStudent" :key="item.value" :label="item.label"
-                                            :value="item.value">
+                                        <el-option v-for="item in optionsStudent" :key="item.student_id"
+                                            :label="item.name" :value="item.student_id">
                                         </el-option>
                                     </el-select>
                                 </el-form-item>
@@ -68,9 +67,8 @@
                         学生信息
                     </h3>
                     <div style="height: 200px">
-                        <p>班级名称:{{ formname.class }}</p>
-                        <p>小组:{{ formname.group }}</p>
-                        <p>学生名称:{{ formname.student }}</p>
+                        <p>班级名称:{{ currentClass.name }}</p>
+                        <p>学生名称:{{ currentStudent.name }}</p>
                     </div>
                     <!-- <el-button
               type="text"
@@ -274,28 +272,13 @@ export default {
             },
             needinput: false,
             audionum: 0,
-            optionsClass: [
-                { value: 154, label: "电子商务" },
-                { value: 155, label: "信息工程" },
-                { value: 156, label: "软件工程" },
-                { value: 157, label: "网络空间安全" },
-            ],
-            optionsStudent: [
-                { value: "04677", label: "李老师" },
-                { value: "18110240013", label: "吴斌" },
-                { value: "19110240026", label: "赵一飞" },
-                { value: "20212010031", label: "王帅宇" },
-                { value: "20210240125", label: "姚鑫玉" },
-                { value: "21210240113", label: "包智超" },
-                { value: "21210240340", label: "王朔" },
-                { value: "22210240271", label: "苏永甫" },
-                { value: "22210240325", label: "谢万超" },
-                { value: "22210240335", label: "徐铮" },
-            ],
+            optionsClass: [],
+            optionsStudent: [],
+            currentClass: "",
+            currentStudent: "",
             form: {
-                class: 154,
-                group: 1,
-                student: "22210240325",
+                class: "CL001",
+                student: "",
             },
             formname: {
                 class: "电子商务",
@@ -330,10 +313,10 @@ export default {
         this.utils.vedio(this, "http://124.222.217.145:8090/live/" + 154 + ".flv")
         this.loadingTendenies = false
         this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("depressedTendencies", this.depressedTendencies, "#38C3A1", "抑郁倾向")
-            this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("depressedWarning", this.depressedWarning, "#38C3A1", "倾向预警")
-            this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("paranoidTendencies", this.paranoidTendencies, "#808080", "偏执倾向")
-            this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("anxietyTendencies", this.anxietyTendencies, "#808080", " 焦虑倾向")
-            this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("hostileTendencies", this.hostileTendencies, "#808080", "敌对倾向")
+        this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("depressedWarning", this.depressedWarning, "#38C3A1", "倾向预警")
+        this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("paranoidTendencies", this.paranoidTendencies, "#808080", "偏执倾向")
+        this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("anxietyTendencies", this.anxietyTendencies, "#808080", " 焦虑倾向")
+        this.echartsDepressedParanoidAnxietyHostileTendenciesWarning("hostileTendencies", this.hostileTendencies, "#808080", "敌对倾向")
         // this.request.get("/mental_health_scores").then(res => {
         //     this.depressedTendencies = Number(res.depressedTendencies);
         //     this.depressedWarning = Number(res.depressedWarning);
@@ -370,14 +353,32 @@ export default {
             this.echartsInteractionConcentrationStatusData();
             this.echartsStatus(); // 更新图表
         }, 30000); // 每隔30秒更新一次数据
+        this.request.get("/classes").then(res => {
+            if (res.data) {
+                this.optionsClass = res.data;
+                this.request.get("/classes?class_id=" + this.optionsClass[0].class_id).then(res => {
+                    if (res.data) {
+                        this.optionsStudent = res.data.students;
+                        console.log(this.optionsStudent)
+                    }
+                })
+                this.currentClass = this.optionsClass.find(item => item.class_id === this.form.class)
+            }
 
+        })
     },
     methods: {
         changeClass() {
-            console.log(1)
+            this.request.get("/classes?class_id=" + this.form.class).then(res => {
+                if (res.data) {
+                    this.optionsStudent = res.data.students;
+                    console.log(this.optionsStudent)
+                }
+            })
+            this.currentClass = this.optionsClass.find(item => item.class_id === this.form.class)
         },
         changeStudent() {
-            console.log(1)
+            this.currentStudent = this.optionsStudent.find(item => item.student_id === this.form.student)
         },
         changeGroup() {
             console.log(1)
