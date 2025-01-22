@@ -15,14 +15,14 @@
                 </el-select>
             </el-form-item>
             <!-- 输入用户名栏 -->
-            <el-form-item label="电子邮箱:" class="labellogin">
-                <el-input v-model="form.email" class="inputlogin" placeholder="请输入电子邮箱">
+            <el-form-item label="账号/邮箱:" class="labellogin">
+                <el-input v-model="form.email" class="inputlogin" placeholder="teacher/student/admin/parent">
                 </el-input>
             </el-form-item>
             <!-- 输入登录密码栏 -->
             <el-form-item label="登录密码:" class="labellogin" style="color: skyblue">
                 <el-input v-model="form.password" class="inputlogin" style="background-color: #fff" show-password
-                    placeholder="请输入密码"></el-input>
+                    placeholder="123456"></el-input>
             </el-form-item>
 
             <el-form-item style="text-align: center">
