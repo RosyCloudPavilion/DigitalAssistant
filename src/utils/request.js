@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { serverIp, serverPort } from '../../public/config';
+import { serverIp, serverPort } from './config';
 
 
 const request = axios.create({
